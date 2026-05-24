@@ -1,0 +1,13 @@
+# Web Framework & Server
+fastapi==0.110.0
+uvicorn==0.29.0
+pydantic==2.6.4
+python-multipart==0.0.9
+
+# Data Extraction (PDF)
+pdfplumber==0.11.0
+
+# NLP & AI Logic
+spacy==3.7.4
+sentence-transformers==2.6.1
+groq==0.4.2
