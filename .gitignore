@@ -23,3 +23,6 @@ Thumbs.db
 # Ignore test documents and personal data
 *.pdf
 test_cv.pdf
+
+# ignore pytouch placeholders
+*.pytouch
