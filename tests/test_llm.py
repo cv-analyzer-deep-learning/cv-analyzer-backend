@@ -1,15 +1,13 @@
 import json
 from app.services.llm_service import generate_cv_feedback
 
-# A condensed representation of a Full Stack Developer CV
 DUMMY_CV_TEXT = """
-Développeur Full Stack - Lead Tech du projet SaaS Minisite.
+Guei - Full Stack Developer (Freelance External) / Lead Tech
 Ingénierie Frontend : Remplacement d'une gestion d'état classique par une architecture Event Sourcing (Next.js / Zustand).
 Backend & Cloud : Modélisation de base de données via Prisma ORM, Node.js, PostgreSQL, AWS.
 Qualité : Pilotage d'une stratégie de tests automatisés (Jest, Cypress) visant 80% de couverture.
 """
 
-# A realistic job offer that matches some skills but introduces specific gaps
 DUMMY_JOB_OFFER = """
 Recherche Développeur Full Stack Confirmé pour une FinTech.
 Compétences requises : React, Node.js, TypeScript.
@@ -22,12 +20,15 @@ def run_llm_test():
     print("🚀 Contacting Groq API (Llama 3)...")
     
     try:
-        # We simulate that our NLP engine already scored this a 75/100
-        mock_nlp_score = 75
+        # We simulate the exact scenario we hit earlier: a low math score (12)
+        # due to vocabulary mismatch, despite high technical skills.
+        mock_nlp_score = 12
         
+        
+        # The NLP score is no longer passed in
         result = generate_cv_feedback(DUMMY_CV_TEXT, DUMMY_JOB_OFFER, mock_nlp_score)
         
-        print("\n✅ Success! The LLM generated valid data that passed the Pydantic shield:")
+        print("\n✅ Success! The LLM autonomously generated the score and passed the Pydantic shield:")
         print("=" * 60)
         print(json.dumps(result, indent=2, ensure_ascii=False))
         print("=" * 60)

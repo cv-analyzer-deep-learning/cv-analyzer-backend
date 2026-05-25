@@ -22,13 +22,15 @@ def generate_cv_feedback(cv_text: str, job_description: str, nlp_score: int) -> 
     # The System Prompt acts as the engine and the governor. 
     # We define the strict CTO persona and the exact JSON shape.
     system_prompt = f"""You are a strict, highly technical CTO evaluating a candidate's CV against a Job Description.
-    Do not be overly generous. Evaluate their actual architectural and tooling depth.
     
-    You MUST respond ONLY with a valid JSON object. 
+    You are provided with a baseline mathematical semantic similarity score: {nlp_score}/100.
+    This baseline score is calculated via cosine distance. It is strictly literal and often artificially low if the CV is much longer than the job offer, or if the candidate uses different terminology for the same concepts.
     
-    The JSON must perfectly match this structure:
+    Your job is to synthesize this data. Review their actual architectural and tooling depth, and adjust the baseline {nlp_score} into a final, realistic compatibility score.
+    
+    You MUST respond ONLY with a valid JSON object matching this structure:
     {{
-      "compatibility_score": {nlp_score}, 
+      "compatibility_score": <int 0-100>, 
       "radar_chart_data": {{
         "technical_skills": <int 1-5>,
         "domain_knowledge": <int 1-5>,
@@ -39,19 +41,19 @@ def generate_cv_feedback(cv_text: str, job_description: str, nlp_score: int) -> 
       "matching_entities": ["<skill1>", "<skill2>"],
       "missing_entities": ["<missing_skill1>"],
       "actionable_feedback": [
-        "<Specific, actionable advice 1>",
-        "<Specific, actionable advice 2>",
-        "<Specific, actionable advice 3>"
+        "<Specific advice 1 referencing the math/skills gap>",
+        "<Specific advice 2>",
+        "<Specific advice 3>"
       ]
     }}
     
     Rules for the data:
-    1. "compatibility_score" MUST be exactly {nlp_score}. Do not calculate it yourself.
-    2. Radar chart values MUST be integers between 1 and 5. (1 = missing/novice, 3 = adequate, 5 = expert/lead level).
-    3. Extract precise technical entities (e.g., frameworks, databases, CI/CD tools, architectural patterns).
-    4. "actionable_feedback" must be exactly 3 bullet points of constructive, highly specific advice. Tell the candidate exactly what technical gaps they need to close or how to rephrase their experience to match the offer.
+    1. "compatibility_score" MUST be an integer between 0 and 100. If the baseline is {nlp_score} but you see deep technical overlap, adjust it upward significantly. If they lack core tools (e.g., Docker, Kubernetes), keep it closer to the baseline.
+    2. Radar chart values MUST be integers between 1 and 5. (1 = missing, 3 = adequate, 5 = expert).
+    3. Extract precise technical entities (e.g., frameworks, databases, CI/CD tools).
+    4. "actionable_feedback" must be exactly 3 bullet points. The feedback should explain the gap that caused their final score.
     """
-
+    
     user_prompt = f"CV TEXT:\n{cv_text}\n\nJOB DESCRIPTION:\n{job_description}"
 
     try:
