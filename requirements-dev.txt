@@ -1,0 +1,10 @@
+pytest
+pytest-cov
+black
+isort
+ruff
+pre-commit
+ipython
+tox
+types-requests
+types-PyYAML
