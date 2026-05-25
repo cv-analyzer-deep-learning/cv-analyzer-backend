@@ -1,13 +1,17 @@
 import json
+import os
+from dotenv import load_dotenv  # Add this import
 from groq import Groq
 from app.models.schemas import AnalysisResponse
 
-# Initialize the Groq client. 
-# It automatically pulls the GROQ_API_KEY from your .env file.
+# Force Python to read the .env file in the root directory
+load_dotenv()
+
+# Initialize the Groq client.
 try:
     client = Groq()
 except Exception:
-    raise RuntimeError("Groq client failed to initialize. Check your GROQ_API_KEY in the .env file.")
+    raise RuntimeError("Groq client failed to initialize. Check GROQ_API_KEY in the .env file.")
 
 def generate_cv_feedback(cv_text: str, job_description: str, nlp_score: int) -> dict:
     """
@@ -52,13 +56,13 @@ def generate_cv_feedback(cv_text: str, job_description: str, nlp_score: int) -> 
 
     try:
         response = client.chat.completions.create(
-            model="llama3-70b-8192", 
+            model=os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile"), 
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
             ],
             temperature=0.1, # Keep it near zero for deterministic, stable JSON formatting
-            response_format={"type": "json_object"} # Native Groq feature to force JSON
+            response_format={"type": "json_object"} 
         )
         
         raw_json = response.choices[0].message.content
