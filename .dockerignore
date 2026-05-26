@@ -1,0 +1,21 @@
+# Security: Never ship secrets
+.env
+
+# Git history
+.git
+.gitignore
+
+# Virtual environments & Cache
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# IDE configurations
+.vscode/
+.idea/
+
+# Local testing artifacts
+*.pdf
+tests/
